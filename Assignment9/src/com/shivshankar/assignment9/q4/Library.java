@@ -30,6 +30,32 @@ class BookDetails{
 		this.quantity =s.nextInt();
 	}
 	
+	public String getIsbn() {
+		return isbn;
+	}
+
+	public double getPrice() {
+		return price;
+	}
+
+	public String getAuthorName() {
+		return authorName;
+	}
+
+	public int getQuantity() {
+		return quantity;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		BookDetails other=(BookDetails)obj;
+		if(this==null)
+			return false;
+		if(this==obj)
+			return true;
+		if(this.isbn.equals(other.isbn))
+			return true;
+		return false;
+	}
 	@Override
 	public String toString() {
 		return "ISBN: "+this.isbn+" Price: "+this.price+" Auther Name: "+this.authorName+" Quantity: "+this.quantity;
@@ -69,28 +95,39 @@ public class Library{
 						bookdetails.acceptData();
 						b.add(bookdetails);
 					break;
-				case 2:for(Object obj:b)
+				case 2:for(BookDetails obj:b)
 						System.out.println(obj);
 						break;
 				case 3:System.out.println("Enter index");
 						deleteIndex=sc.nextInt();
 						b.remove(deleteIndex-1);
+						break;
 				case 4:System.out.println("Enter ISBN");
 						isbn=sc.next();
-						if(b.contains(isbn))
+						BookDetails key=new BookDetails();
+						key.isbn=isbn;
+						if(b.contains(key))
 							System.out.println("Book :"+b.toString());
 						else
 							System.out.println("Not available");
 						break;
-				case 5:b.removeAll(b);
+				case 5:b.clear();
 						System.out.println("All record deleted");
 						break;
 				case 6:System.out.println("Total Books: "+b.size());
 						break;
-				case 7:b.sort(null);;
-						for(Object obj:b)
-						System.out.println(obj);
-					break;
+				case 7:class BookPriceComparator implements Comparator<BookDetails>
+						{
+							@Override
+							public int compare(BookDetails b1, BookDetails b2) {
+								int diff=Double.compare(b1.getPrice(),b2.getPrice());
+								return diff;
+							}
+						}
+				        BookPriceComparator comparator=new BookPriceComparator();
+				        b.sort(comparator);
+				        System.out.println(b.toString());
+						break;
 				default:System.out.println("Wrong input");;
 					break;
 			}
