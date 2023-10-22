@@ -82,7 +82,66 @@ public class UserDao implements AutoCloseable{
 	public int deleteUser(int id)
 	{
 		int cnt=0;
+		String sql="delete from users where id=?";
+		try(PreparedStatement pstmt=con.prepareStatement(sql))
+		{
+			pstmt.setInt(1, id);
+			pstmt.executeUpdate();
+			cnt++;
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		return cnt;
 	}
 	
+	
+	public int showUser(int id)
+	{
+		int cnt=0;
+		String sql="Select *from users where id=?";
+		try(PreparedStatement pstmt=con.prepareStatement(sql))
+		{
+			pstmt.setInt(1, id);
+			ResultSet rs=pstmt.executeQuery();
+			while(rs.next())
+			{
+				String fName=rs.getString("first_name");
+				String lName=rs.getString("last_name");
+				String email=rs.getString("email");
+				//String pass=rs.getString("password");
+				SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
+				java.sql.Date sDate=rs.getDate("dob");
+				java.util.Date uDate=new java.util.Date(sDate.getTime());
+				String date=sdf.format(uDate);
+				boolean status=rs.getBoolean("status");
+				String role=rs.getString("role");
+				System.out.println("Id: "+id+" First Name: "+fName+" lName: "+lName+" Email"+email+" Date: "+date+" Status: "+status+" Role: "+role);
+			}
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return cnt;
+	}
+	
+	public int updateUser(int id,String fname,String lname,String passwd)
+	{
+		int cnt=0;
+		String sql="update users set first_name=?,last_name=?,password=? where id=?";
+		try(PreparedStatement pstmt=con.prepareStatement(sql))
+		{
+			pstmt.setString(1, fname);
+			pstmt.setString(2, lname);
+			pstmt.setString(3, passwd);
+			pstmt.setInt(4, id);
+			pstmt.executeUpdate();
+			cnt++;
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return cnt;
+	}
 }
